@@ -1,6 +1,6 @@
 import React from "react";
-import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { Dashboard } from "../Dashboard";
+import { render, fireEvent, waitFor } from "../test-utils";
+import { Dashboard } from "./Dashboard";
 
 describe("Dashboard", () => {
   it("should load with default route", () => {

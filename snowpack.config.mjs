@@ -16,13 +16,11 @@ export default {
     /* Example: Bundle your final build: */
     // "bundle": true,
   },
-  packageOptions: {
-    /* ... */
-  },
+  packageOptions: {},
   devOptions: {
     /* ... */
   },
   buildOptions: {
-    /* ... */
+    sourcemap: true,
   },
 };
