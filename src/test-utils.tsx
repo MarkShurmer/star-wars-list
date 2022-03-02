@@ -2,11 +2,21 @@ import React, { FC, ReactElement } from "react";
 import { render, RenderOptions } from "@testing-library/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { MemoryRouter } from "react-router-dom";
+import { RecoilRoot } from "recoil";
+
+// const mockContext: State = {
+//   favourites,
+//   selectedCharacter,
+//   setSelectedCharacter,
+//   toggleFavourite,
+// };
 
 const AllTheProviders: FC = ({ children }) => {
   return (
     <ChakraProvider>
-      <MemoryRouter>{children}</MemoryRouter>
+      <RecoilRoot>
+        <MemoryRouter>{children}</MemoryRouter>
+      </RecoilRoot>
     </ChakraProvider>
   );
 };
