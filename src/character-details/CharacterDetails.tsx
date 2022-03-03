@@ -1,38 +1,44 @@
 import { Box, Heading, SimpleGrid, Switch } from "@chakra-ui/react";
-import React, { FC } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { peopleState, selectedCharacterState } from "../atoms";
+import { favouritesState, selectedCharacterState } from "../atoms";
 import { Person } from "../types";
+import { useNavigate } from "react-router";
 
 export const CharacterDetails: FC<{}> = () => {
   const [selectedCharacter, setSelectedCharacter] = useRecoilState<Person>(
     selectedCharacterState
   );
-  const [people, setPeople] = useRecoilState(peopleState);
+  const [favourites, setFavourites] = useRecoilState(favouritesState);
+  const [isFavourite, setIsFavourite] = useState(true);
+  const navigate = useNavigate();
 
   const toggleFavourite = () => {
     if (selectedCharacter !== undefined) {
-      const newCharacter = {
-        ...selectedCharacter,
-        isFavourite: !selectedCharacter.isFavourite,
-      };
-
-      const peopleIndex = people.findIndex(
+      const favouritesIndex = favourites.findIndex(
         (fav) => fav.name === selectedCharacter.name
       );
 
-      setSelectedCharacter(newCharacter);
-
-      if (peopleIndex > -1) {
-        // found, so update
-        const peopleCopy = people
-          .slice(0, peopleIndex - 1)
-          .concat(newCharacter)
-          .concat(people.slice(peopleIndex + 1));
-        setPeople(peopleCopy);
+      let newFavourites;
+      if (favouritesIndex === -1) {
+        newFavourites = [...favourites].concat(selectedCharacter);
+      } else {
+        // found, so remove
+        newFavourites = [...favourites];
+        newFavourites.splice(favouritesIndex, 1);
       }
+      setFavourites(newFavourites);
+      navigate("/favourites");
     }
   };
+
+  useEffect(() => {
+    const favouritesIndex = favourites.findIndex(
+      (fav) => fav.name === selectedCharacter.name
+    );
+
+    setIsFavourite(favouritesIndex !== -1);
+  }, []);
 
   return (
     <div data-testid="character-details">
@@ -43,10 +49,7 @@ export const CharacterDetails: FC<{}> = () => {
           <Box data-testid="name-char">{selectedCharacter.name}</Box>
           <Box>Favourite</Box>
           <Box>
-            <Switch
-              isChecked={selectedCharacter.isFavourite}
-              onChange={toggleFavourite}
-            />
+            <Switch isChecked={isFavourite} onChange={toggleFavourite} />
           </Box>
           <Box>Hair colour</Box>
           <Box>{selectedCharacter.hair_color}</Box>

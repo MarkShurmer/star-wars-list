@@ -26,29 +26,27 @@ export const CharacterList: FC<{}> = () => {
   const navigate = useNavigate();
   const [people, setPeople] = useRecoilState(peopleState);
   const setSelectedCharacter = useSetRecoilState(selectedCharacterState);
-  const [currentPage, setCurrentPage] = useState(1);
+  //const [currentPage, setCurrentPage] = useState(1);
 
-  const loadPeople = async () => {
-    if (people.length === 0 || pageNumber !== currentPage) {
-      const peopleResponse = await getPeople(pageNumber, filter);
-      setPeople(peopleResponse.people);
-      setTotalPeople(peopleResponse.total);
-      setCurrentPage(pageNumber);
-    }
+  const loadPeople = async (pageNumberToUse: number) => {
+    const peopleResponse = await getPeople(pageNumberToUse, filter);
+    setPeople(peopleResponse.people);
+    setTotalPeople(peopleResponse.total);
+    //setCurrentPage(pageNumber);
   };
 
   useEffect(() => {
-    loadPeople();
+    loadPeople(pageNumber);
   }, []);
 
   const gotoNextPage = () => {
     setPageNumber(pageNumber + 1);
-    loadPeople();
+    loadPeople(pageNumber + 1);
   };
 
   const gotoPrevPage = () => {
     setPageNumber(pageNumber - 1);
-    loadPeople();
+    loadPeople(pageNumber - 1);
   };
 
   const changeFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +54,7 @@ export const CharacterList: FC<{}> = () => {
   };
 
   const doFilter = () => {
-    loadPeople();
+    loadPeople(pageNumber);
   };
 
   const selectCharacter = (person: Person) => {

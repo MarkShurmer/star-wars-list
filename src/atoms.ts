@@ -20,13 +20,9 @@ export const peopleState = atom<Array<Person>>({
   default: [], // default value (aka initial value)
 });
 
-export const favouritesState = selector<Array<Person>>({
+export const favouritesState = atom<Array<Person>>({
   key: "favouritesState", // unique ID (with respect to other atoms/selectors)
-  get: ({ get }) => {
-    const people = get(peopleState);
-
-    return people.filter((person) => person.isFavourite);
-  },
+  default: [], // default value (aka initial value)
 });
 
 export const pageNumberState = atom<number>({
