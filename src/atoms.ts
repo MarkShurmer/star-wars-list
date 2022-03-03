@@ -28,3 +28,8 @@ export const favouritesState = selector<Array<Person>>({
     return people.filter((person) => person.isFavourite);
   },
 });
+
+export const pageNumberState = atom<number>({
+  key: "pageNumberState", // unique ID (with respect to other atoms/selectors)
+  default: 1, // default value (aka initial value)
+});

@@ -1,19 +1,37 @@
 import { Box, Heading, SimpleGrid, Switch } from "@chakra-ui/react";
 import React, { FC } from "react";
 import { useRecoilState } from "recoil";
-import { selectedCharacterState } from "../atoms";
+import { peopleState, selectedCharacterState } from "../atoms";
 import { Person } from "../types";
 
 export const CharacterDetails: FC<{}> = () => {
   const [selectedCharacter, setSelectedCharacter] = useRecoilState<Person>(
     selectedCharacterState
   );
+  const [people, setPeople] = useRecoilState(peopleState);
 
   const toggleFavourite = () => {
-    setSelectedCharacter({
-      ...selectedCharacter,
-      isFavourite: !selectedCharacter?.isFavourite,
-    });
+    if (selectedCharacter !== undefined) {
+      const newCharacter = {
+        ...selectedCharacter,
+        isFavourite: !selectedCharacter.isFavourite,
+      };
+
+      const peopleIndex = people.findIndex(
+        (fav) => fav.name === selectedCharacter.name
+      );
+
+      setSelectedCharacter(newCharacter);
+
+      if (peopleIndex > -1) {
+        // found, so update
+        const peopleCopy = people
+          .slice(0, peopleIndex - 1)
+          .concat(newCharacter)
+          .concat(people.slice(peopleIndex + 1));
+        setPeople(peopleCopy);
+      }
+    }
   };
 
   return (
@@ -22,11 +40,11 @@ export const CharacterDetails: FC<{}> = () => {
       {selectedCharacter && (
         <SimpleGrid columns={2} spacing={10}>
           <Box>Name</Box>
-          <Box data-testid="name-char">{selectedCharacter?.name}</Box>
+          <Box data-testid="name-char">{selectedCharacter.name}</Box>
           <Box>Favourite</Box>
           <Box>
             <Switch
-              isChecked={selectedCharacter?.isFavourite}
+              isChecked={selectedCharacter.isFavourite}
               onChange={toggleFavourite}
             />
           </Box>

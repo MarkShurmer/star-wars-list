@@ -19,9 +19,10 @@ describe("Dashboard", () => {
     (getPeople as jest.Mock).mockResolvedValue(mockPeepResponse);
   });
 
-  it("should load with default route", () => {
+  it("should load with default route", async () => {
     const { getByTestId } = render(<Dashboard />);
 
+    await waitFor(() => getByTestId("character-list"));
     expect(getByTestId("character-list")).not.toBeNull();
   });
 

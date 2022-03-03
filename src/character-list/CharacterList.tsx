@@ -10,36 +10,36 @@ import {
   Button,
   Input,
   HStack,
-  Flex,
   VStack,
 } from "@chakra-ui/react";
 import React, { FC, useEffect, useState } from "react";
 import { getPeople } from "../service/data-service";
 import { Person } from "../types";
 import { useNavigate } from "react-router";
-import { useRecoilState } from "recoil";
-import { peopleState, selectedCharacterState } from "../atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { pageNumberState, peopleState, selectedCharacterState } from "../atoms";
 
 export const CharacterList: FC<{}> = () => {
-  const [pageNumber, setPageNumber] = useState(1);
-  //const [people, setPeople] = useState<Array<Person>>([]);
+  const [pageNumber, setPageNumber] = useRecoilState(pageNumberState);
   const [totalPeople, setTotalPeople] = useState(0);
   const [filter, setFilter] = useState("");
   const navigate = useNavigate();
   const [people, setPeople] = useRecoilState(peopleState);
-  const [selectedCharacter, setSelectedCharacter] = useRecoilState(
-    selectedCharacterState
-  );
+  const setSelectedCharacter = useSetRecoilState(selectedCharacterState);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const loadPeople = async () => {
-    const peopleResponse = await getPeople(pageNumber, filter);
-    setPeople(peopleResponse.people);
-    setTotalPeople(peopleResponse.total);
+    if (people.length === 0 || pageNumber !== currentPage) {
+      const peopleResponse = await getPeople(pageNumber, filter);
+      setPeople(peopleResponse.people);
+      setTotalPeople(peopleResponse.total);
+      setCurrentPage(pageNumber);
+    }
   };
 
   useEffect(() => {
     loadPeople();
-  }, [pageNumber]);
+  }, []);
 
   const gotoNextPage = () => {
     setPageNumber(pageNumber + 1);
