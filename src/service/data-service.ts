@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { createContext } from "react";
+import React from "react";
 import { Film, Person, Starship } from "../types";
 import { CharacterResponse, PeopleResponse, Planet } from "../types";
 
@@ -60,6 +60,7 @@ export const getPeople = async (
       homeworld: await getPlanet(char.homeworld),
       starships: await populateStarships(char.starships),
       films: await populateFilms(char.films),
+      isFavourite: false,
     };
   });
 
